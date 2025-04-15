@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>dev.ikm.build</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.58.0</version>
+	</parent>
+
+	<groupId>dev.ikm.data.tinkar</groupId>
+	<artifactId>starter-data-parent</artifactId>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+
+	<name>Starter Data Parent</name>
+	<description>Starter Data Parent Project</description>
+	<url>https://www.ikm.dev</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<!-- OSSRH Related Developer (Start) -->
+		<developer>
+			<id>ikmdev</id>
+			<name>IKM Development Team</name>
+			<email>support@ikm.dev</email>
+		</developer>
+		<!-- OSSRH Related Developer (End) -->
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/ikmdev/starter-data.git</connection>
+		<developerConnection>scm:git:ssh://github.com:ikmdev/starter-data.git</developerConnection>
+		<url>http://www.github.com/ikmdev/starter-data</url>
+	</scm>
+
+	<properties>
+		<!-- Tinkar Starter Data Properties -->
+		<tinkar-starter-data.groupId>dev.ikm.data.tinkar</tinkar-starter-data.groupId>
+		<tinkar-starter-data.artifactId>tinkar-starter-data</tinkar-starter-data.artifactId>
+		<tinkar-starter-data.version>1.1.1</tinkar-starter-data.version>
+		<tinkar-starter-data.classifier>unreasoned-sa</tinkar-starter-data.classifier>
+		<!-- Plugin Versions -->
+		<tinkar-maven-artifacts.version>1.20.0</tinkar-maven-artifacts.version>
+		<maven-dependency-plugin>3.8.1</maven-dependency-plugin>
+		<build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
+		<!-- Properties for Ease of Use -->
+		<datastore.path>${project.build.directory}/${tinkar-starter-data.artifactId}-${tinkar-starter-data.version}-${tinkar-starter-data.classifier}</datastore.path>
+		<data-artifact.prefix>${project.artifactId}-${project.version}</data-artifact.prefix>
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+		<revision>${maven.build.timestamp}-SNAPSHOT</revision>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>dev.ikm.maven.tinkar</groupId>
+					<artifactId>tinkar-maven-plugin</artifactId>
+					<version>${tinkar-maven-artifacts.version}</version>
+					<configuration>
+						<dataStore>${datastore.path}</dataStore>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${maven-dependency-plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${build-helper-maven-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-tinkar-starter-data-dependency</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${tinkar-starter-data.groupId}</groupId>
+									<artifactId>${tinkar-starter-data.artifactId}</artifactId>
+									<version>${tinkar-starter-data.version}</version>
+									<classifier>${tinkar-starter-data.classifier}</classifier>
+									<type>zip</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>dev.ikm.maven.tinkar</groupId>
+				<artifactId>tinkar-maven-plugin</artifactId>
+				<executions>
+					<!-- Import Provided Data Resources -->
+					<execution>
+						<id>import-data-dependencies</id>
+						<goals>
+							<goal>load-data</goal>
+						</goals>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>${project.build.directory}/input-data</directory>
+									<includes>
+										<include>**pb.zip</include>
+									</includes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+					<execution>
+						<id>${project.artifactId}-unreasoned-export</id>
+						<phase>compile</phase> <!-- Overriding default phase to force this execution before reasoning -->
+						<goals>
+							<goal>export-tinkar-data</goal>
+						</goals>
+						<configuration>
+							<fileName>${data-artifact.prefix}-unreasoned-pb.zip</fileName>
+						</configuration>
+					</execution>
+					<!-- Run full reasoner -->
+					<execution>
+						<id>${project.artifactId}-full-reasoner</id>
+						<goals>
+							<goal>run-full-reasoner</goal>
+						</goals>
+					</execution>
+					<!-- Export data as a protocol buffers zip file -->
+					<execution>
+						<id>${project.artifactId}-reasoned-export</id>
+						<goals>
+							<goal>export-tinkar-data</goal>
+						</goals>
+						<configuration>
+							<exportDirectory>${project.build.directory}</exportDirectory>
+							<fileName>${data-artifact.prefix}-reasoned-pb.zip</fileName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${data-artifact.prefix}-reasoned-pb.zip</file>
+									<type>zip</type>
+									<classifier>reasoned-pb</classifier>
+								</artifact>
+								<artifact>
+									<file>${project.build.directory}/${data-artifact.prefix}-unreasoned-pb.zip</file>
+									<type>zip</type>
+									<classifier>unreasoned-pb</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Skip Enforcer Rule -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-no-bad-sections</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<!-- Don't enforce SemVer for this project -->
+							<rulesToSkip>requireProperty</rulesToSkip>
+							<failIfNoRules>false</failIfNoRules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Skip Staging Plugin -->
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<inherited>false</inherited>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>starter-data-parent</id>
+			<activation>
+				<file>
+					<exists>src/main/resources/</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>dev.ikm.maven.tinkar</groupId>
+						<artifactId>tinkar-maven-plugin</artifactId>
+						<executions>
+							<!-- Import Provided Data Resources -->
+							<execution>
+								<id>import-data-resources</id>
+								<goals>
+									<goal>load-data</goal>
+								</goals>
+								<configuration>
+									<filesets>
+										<fileset>
+											<directory>src/main/resources/</directory>
+											<includes>
+												<include>**pb.zip</include>
+											</includes>
+										</fileset>
+									</filesets>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>starter-data-child</id>
+			<activation>
+				<file>
+					<missing>src/main/resources/</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-starter-data-parent-dependency</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>dev.ikm.data.tinkar</groupId>
+											<artifactId>starter-data-parent</artifactId>
+											<version>${revision}</version>
+											<classifier>unreasoned-pb</classifier>
+											<type>zip</type>
+											<overWrite>true</overWrite>
+											<outputDirectory>${project.build.directory}/input-data</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<modules>
+		<module>tinkar-starter-data</module>
+		<module>komet-starter-data</module>
+	</modules>
+</project>

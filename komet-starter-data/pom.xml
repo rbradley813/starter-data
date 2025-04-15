@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>dev.ikm.data.tinkar</groupId>
+		<artifactId>starter-data-parent</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<groupId>dev.ikm.data.komet</groupId>
+	<artifactId>komet-starter-data</artifactId>
+	<packaging>pom</packaging>
+
+	<name>Komet Starter Data Pipeline</name>
+	<description>Komet Starter Data Pipeline Project</description>
+
+	<properties>
+		<membershipExportUuid>bbbbf1fe-00f0-55e0-a19c-6300dbaab9b2</membershipExportUuid>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>dev.ikm.maven.tinkar</groupId>
+					<artifactId>tinkar-maven-plugin</artifactId>
+					<configuration>
+						<filters>
+							<filter>
+								<allowedMemberships>
+									<publicId>
+										<uuids>
+											<uuid>${membershipExportUuid}</uuid>
+										</uuids>
+									</publicId>
+								</allowedMemberships>
+							</filter>
+						</filters>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

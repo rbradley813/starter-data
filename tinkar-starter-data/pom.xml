@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>dev.ikm.data.tinkar</groupId>
+		<artifactId>starter-data-parent</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<artifactId>tinkar-starter-data</artifactId>
+	<packaging>pom</packaging>
+
+	<name>Tinkar Starter Data</name>
+	<description>Tinkar Starter Data Project</description>
+
+	<properties>
+		<membershipExportUuid>6070f6f5-893d-5144-adce-7d305c391cf9</membershipExportUuid>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>dev.ikm.maven.tinkar</groupId>
+					<artifactId>tinkar-maven-plugin</artifactId>
+					<configuration>
+						<filters>
+							<filter>
+								<allowedMemberships>
+									<publicId>
+										<uuids>
+											<uuid>${membershipExportUuid}</uuid>
+										</uuids>
+									</publicId>
+								</allowedMemberships>
+							</filter>
+						</filters>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
