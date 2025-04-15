@@ -291,6 +291,21 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>localDeploy</id>
+			<distributionManagement>
+				<repository>
+					<id>local-release</id>
+					<name>Local Release Repository</name>
+					<url>file:${project.build.directory}/local_deploy_repo/release</url>
+				</repository>
+				<snapshotRepository>
+					<id>local-snapshot</id>
+					<name>Local SNAPSHOT Repository</name>
+					<url>file:${project.build.directory}/local_deploy_repo/snapshot</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
 	</profiles>
 
 	<modules>
