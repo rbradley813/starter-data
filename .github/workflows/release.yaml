@@ -25,12 +25,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
+          token: ${{secrets.GITHUB_TOKEN}}
 
       - name: Release IKMDEV Code
         uses: ikmdev/maven-semver-release-action@v2.5.0
         with:
-          ikmdevops_pat: ${{secrets.IKMDEVOPS_PAT_TOKEN}}
+          ikmdevops_pat: ${{secrets.GITHUB_TOKEN}}
           github_token: ${{secrets.GITHUB_TOKEN}}
           ossrh_username: ${{secrets.OSSRH_TOKEN_USER}}
           ossrh_token: ${{secrets.OSSRH_TOKEN_PASS}}
