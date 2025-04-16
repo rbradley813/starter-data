@@ -28,7 +28,7 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
 
       - name: Release IKMDEV Code
-        uses: ikmdev/maven-semver-release-action@v2.5.0
+        uses: ikmdev/maven-semver-release-action@v2.6.0
         with:
           ikmdevops_pat: ${{secrets.GITHUB_TOKEN}}
           github_token: ${{secrets.GITHUB_TOKEN}}
@@ -40,3 +40,5 @@ jobs:
           development_version: "\\${maven.build.timestamp}-SNAPSHOT"
           version_property: "revision"
           skip_update_version: "true"
+          skip_test_project: "true"
+
