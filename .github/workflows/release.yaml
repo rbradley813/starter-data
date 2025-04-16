@@ -14,7 +14,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-24.04
-    if: github.repository_owner == 'ikmdev'
+#    if: github.repository_owner == 'ikmdev'
     steps:
       - name: Verify Branch
         if: env.BRANCH_NAME != env.TRUNK_BRANCH_NAME
