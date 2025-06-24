@@ -19,7 +19,7 @@ logs/
 *.war
 *.nar
 *.ear
-*.zip
+#*.zip
 *.tar.gz
 *.rar
 
@@ -226,5 +226,5 @@ Temporary Items
 ###################
 # General
 ###################
-**.zip
+#**.zip
 htmlReport
